@@ -18,5 +18,7 @@ COPY . .
 
 EXPOSE 8000
 
-# Production default; docker-compose overrides with runserver for dev
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+# Production default; docker-compose overrides with runserver for dev.
+# collectstatic runs at container start (not build time) so it sees the
+# real env vars (SECRET_KEY, DATABASE_URL) the platform injects at deploy.
+CMD ["sh", "-c", "python manage.py collectstatic --noinput && exec gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3"]
