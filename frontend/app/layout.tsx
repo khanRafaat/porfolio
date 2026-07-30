@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     template: "%s | Khan Rafaat Abtahe",
   },
   description:
-    "Full Stack Software Engineer building enterprise systems: pharmaceutical ERP (Pharmik), healthcare platforms (HL7/FHIR), navy personnel management, AI-powered document management, and shipping integrations. Laravel · Spring Boot · Next.js.",
+    "Full Stack Software Engineer with 5+ years building enterprise software for the healthcare, pharmaceutical, defense, and logistics industries — ERP systems, HL7/FHIR health platforms, AI-powered document management, and shipping integrations. Laravel · Spring Boot · Next.js.",
   authors: [{ name: "Khan Rafaat Abtahe", url: siteUrl }],
   creator: "Khan Rafaat Abtahe",
   alternates: {

@@ -65,7 +65,7 @@ export default async function HomePage() {
     alternateName: "Rafaat",
     jobTitle: "Full Stack Software Engineer",
     description:
-      "Full Stack Engineer building enterprise systems: pharmaceutical ERP (Pharmik), healthcare platforms (HL7/FHIR), navy personnel management, AI-powered document management, and shipping integrations.",
+      "Full Stack Software Engineer building enterprise software for the healthcare, pharmaceutical, defense, and logistics industries — ERP systems, HL7/FHIR health platforms, AI-powered document management, and shipping integrations.",
     url: siteUrl,
     image: hasPortrait ? `${siteUrl}/khan-rafaat-abtahe.jpeg` : undefined,
     sameAs: [
