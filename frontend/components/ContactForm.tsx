@@ -4,6 +4,12 @@ import { useState } from "react";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
+// Empty string = same-origin (current single-nginx-domain setup). Set
+// NEXT_PUBLIC_API_URL when frontend/backend are split across domains
+// (e.g. Vercel + Render) — this runs in the browser, so it must be a
+// full absolute URL, not the server-only API_INTERNAL_URL.
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
+
 const inputClass =
   "w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 placeholder-zinc-400 outline-none transition-colors focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder-zinc-500";
 
@@ -17,7 +23,7 @@ export function ContactForm() {
 
     setStatus("sending");
     try {
-      const res = await fetch("/api/v1/portfolio/contact/", {
+      const res = await fetch(`${API_BASE}/api/v1/portfolio/contact/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

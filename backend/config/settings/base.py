@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django_filters",
     "drf_spectacular",
     "storages",
+    "corsheaders",
     # Local apps
     "apps.common",
     "apps.accounts",
@@ -53,7 +54,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -108,13 +111,24 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# ── Cache (Redis) ──────────────────────────────────────────────────────
+# ── Cache (Redis in Docker dev; falls back to in-process cache when no
+# REDIS_URL is configured, e.g. a Render deployment without a Redis addon —
+# DRF's throttle classes (contact form rate limiting) need *some* cache
+# backend, but don't require a shared one for a single web instance) ──────
+_redis_url = env("REDIS_URL", default="")
 CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": env("REDIS_URL", default="redis://redis:6379/0"),
-    }
+    "default": (
+        {"BACKEND": "django.core.cache.backends.redis.RedisCache", "LOCATION": _redis_url}
+        if _redis_url
+        else {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}
+    )
 }
+
+# ── CORS ───────────────────────────────────────────────────────────────
+# Empty by default (same-origin nginx setup needs none). Set to the
+# frontend's origin(s) once frontend and backend are on separate domains
+# (e.g. Vercel + Render): CORS_ALLOWED_ORIGINS=https://yourdomain.com
+CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
 
 # ── DRF ────────────────────────────────────────────────────────────────
 REST_FRAMEWORK = {
@@ -185,7 +199,9 @@ STORAGES = {
         },
     },
     "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        # WhiteNoise: serves admin/DRF static assets straight from gunicorn —
+        # no nginx or CDN needed in front (Render has neither by default).
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
 
