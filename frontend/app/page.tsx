@@ -55,8 +55,36 @@ export default async function HomePage() {
   // Portrait lives at frontend/public/khan-rafaat-abtahe.jpeg
   const hasPortrait = existsSync(join(process.cwd(), "public", "khan-rafaat-abtahe.jpeg"));
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost";
+  // Person schema: tells Google who this site belongs to and links the
+  // profiles together (knowledge-graph food).
+  const personJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: "Khan Rafaat Abtahe",
+    alternateName: "Rafaat",
+    jobTitle: "Full Stack Software Engineer",
+    description:
+      "Full Stack Engineer building enterprise systems: pharmaceutical ERP (Pharmik), healthcare platforms (HL7/FHIR), navy personnel management, AI-powered document management, and shipping integrations.",
+    url: siteUrl,
+    image: hasPortrait ? `${siteUrl}/khan-rafaat-abtahe.jpeg` : undefined,
+    sameAs: [
+      text(t, "github_url", "https://github.com/khanrafaat"),
+      text(t, "linkedin_url", "https://bd.linkedin.com/in/khan-rafaat-abtahe"),
+    ],
+    knowsAbout: [
+      "Laravel", "PHP", "Spring Boot", "Java", "JavaScript", "TypeScript",
+      "Next.js", "Django", "PostgreSQL", "HL7", "FHIR", "ERP systems",
+      "AI engineering", "RAG",
+    ],
+  };
+
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+      />
       {/* ── Hero ────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden">
         <div className="bg-grid absolute inset-0 -z-10" />
