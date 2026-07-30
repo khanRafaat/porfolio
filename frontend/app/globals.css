@@ -1,0 +1,193 @@
+@import "tailwindcss";
+
+/* Class-based dark mode: ThemeToggle adds/removes .dark on <html>.
+   (Tailwind 4 defaults to prefers-color-scheme; this gives us a manual
+   toggle that can still respect the system preference on first visit.) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  color-scheme: light dark;
+}
+
+@theme {
+  /* next/font (Inter) sets --font-inter on <html> */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+::selection {
+  background: oklch(0.845 0.143 164.978 / 0.35); /* violet-300 */
+}
+
+/* Faint blueprint grid behind the hero */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, oklch(0.552 0.016 285.938 / 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.552 0.016 285.938 / 0.08) 1px, transparent 1px);
+  background-size: 3rem 3rem;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+}
+
+/* Article body styling for CMS markdown (rendered by <Prose>) */
+.prose-custom {
+  line-height: 1.75;
+  color: var(--color-zinc-700);
+}
+.dark .prose-custom {
+  color: var(--color-zinc-300);
+}
+.prose-custom h2 {
+  margin: 2.5rem 0 1rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-zinc-900);
+}
+.prose-custom h3 {
+  margin: 2rem 0 0.75rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-zinc-900);
+}
+.dark .prose-custom h2,
+.dark .prose-custom h3 {
+  color: var(--color-zinc-100);
+}
+.prose-custom p {
+  margin: 1rem 0;
+}
+.prose-custom a {
+  color: var(--color-violet-600);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.dark .prose-custom a {
+  color: var(--color-violet-400);
+}
+.prose-custom ul,
+.prose-custom ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+.prose-custom ul {
+  list-style: disc;
+}
+.prose-custom ol {
+  list-style: decimal;
+}
+.prose-custom li {
+  margin: 0.35rem 0;
+}
+.prose-custom blockquote {
+  margin: 1.5rem 0;
+  border-left: 3px solid var(--color-violet-500);
+  padding-left: 1.25rem;
+  font-style: italic;
+  color: var(--color-zinc-500);
+}
+.prose-custom code {
+  border-radius: 0.375rem;
+  background: var(--color-zinc-100);
+  padding: 0.15rem 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+.dark .prose-custom code {
+  background: var(--color-zinc-800);
+}
+.prose-custom pre {
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  border-radius: 1rem;
+  background: var(--color-zinc-900);
+  padding: 1.25rem;
+}
+.dark .prose-custom pre {
+  border: 1px solid var(--color-zinc-800);
+}
+.prose-custom pre code {
+  background: transparent;
+  padding: 0;
+  color: var(--color-zinc-100);
+}
+.prose-custom img {
+  margin: 1.5rem 0;
+  max-width: 100%;
+  border-radius: 1rem;
+}
+.prose-custom hr {
+  margin: 2.5rem 0;
+  border-color: var(--color-zinc-200);
+}
+.dark .prose-custom hr {
+  border-color: var(--color-zinc-800);
+}
+.prose-custom table {
+  margin: 1.5rem 0;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+.prose-custom th,
+.prose-custom td {
+  border: 1px solid var(--color-zinc-200);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+.dark .prose-custom th,
+.dark .prose-custom td {
+  border-color: var(--color-zinc-800);
+}
+
+/* Visible keyboard focus everywhere */
+:focus-visible {
+  outline: 2px solid var(--color-violet-500);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Infinite tech-stack marquee (content is duplicated once in the markup) */
+.marquee {
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 0.625rem;
+  animation: marquee 30s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up {
+    animation: none;
+  }
+  .marquee-track {
+    animation: none;
+    flex-wrap: wrap;
+    width: auto;
+    justify-content: center;
+  }
+}

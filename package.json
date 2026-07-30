@@ -1,0 +1,19 @@
+{
+  "name": "portfolio",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/free-ports.js && docker compose up --build",
+    "dev:detached": "node scripts/free-ports.js && docker compose up --build -d",
+    "stop": "docker compose stop",
+    "down": "docker compose down",
+    "fresh": "docker compose down -v && docker compose up --build",
+    "logs": "docker compose logs -f",
+    "logs:django": "docker compose logs -f django",
+    "logs:next": "docker compose logs -f nextjs",
+    "migrate": "docker compose exec django python manage.py migrate",
+    "makemigrations": "docker compose exec django python manage.py makemigrations",
+    "superuser": "docker compose exec django python manage.py createsuperuser",
+    "shell": "docker compose exec django python manage.py shell",
+    "ps": "docker compose ps"
+  }
+}
