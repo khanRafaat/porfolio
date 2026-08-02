@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getDemoProjects, type PortalProject } from "@/lib/content";
+import { getDemoProjects, getSiteText, text, type PortalProject } from "@/lib/content";
 
 export const revalidate = 60;
 
@@ -38,27 +38,37 @@ function fmtDate(iso: string | null) {
 }
 
 export default async function PortalHomePage() {
-  const projects = await getDemoProjects();
+  const [projects, t] = await Promise.all([getDemoProjects(), getSiteText()]);
+
+  // Admin → Site texts → portal_demo_banner: set to "off" to hide.
+  // The projects below are sample data, so keep this on unless the
+  // portal is showing real client projects behind a login.
+  const showBanner = text(t, "portal_demo_banner", "on").toLowerCase() !== "off";
 
   return (
     <main>
-      <div className="mb-8 flex flex-col gap-4 rounded-2xl border border-violet-500/25 bg-violet-500/5 p-5 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="font-semibold text-violet-700 dark:text-violet-300">
-            Demo preview
-          </p>
-          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-            This is how clients track their projects — milestones, invoices, and
-            progress updates in one place. Client login is coming soon.
-          </p>
+      {showBanner && (
+        <div className="mb-8 flex flex-col gap-4 rounded-2xl border border-violet-500/25 bg-violet-500/5 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="font-semibold text-violet-700 dark:text-violet-300">
+              {text(t, "portal_demo_title", "Demo preview")}
+            </p>
+            <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+              {text(
+                t,
+                "portal_demo_text",
+                "This is how clients track their projects — milestones, invoices, and progress updates in one place. Client login is coming soon.",
+              )}
+            </p>
+          </div>
+          <Link
+            href="/contact"
+            className="shrink-0 rounded-full bg-zinc-900 px-5 py-2.5 text-center text-sm font-medium text-white transition-colors hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+          >
+            Become a client
+          </Link>
         </div>
-        <Link
-          href="/contact"
-          className="shrink-0 rounded-full bg-zinc-900 px-5 py-2.5 text-center text-sm font-medium text-white transition-colors hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
-        >
-          Become a client
-        </Link>
-      </div>
+      )}
 
       <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Your projects</h1>
 
